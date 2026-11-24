@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Level Up – Les jeux qui valent le coup</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=DM+Sans:wght@400;500;700&display=swap">
+<style>
+:root{
+  --bg:#fff4dc; --surface:#ffffff; --ink:#1b1740; --muted:#5d5985; --line:#1b1740; --blue:#2f5bff; --mint:#16d6a0; --sun:#ffc93c;
+  --accent:#ff2e88; --accent-ink:#ffffff; --chip:#ffe3a3;
+  color-scheme: light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#15122e; --surface:#201b45; --ink:#f1eeff; --muted:#a9a3d6; --line:#3a3470;
+    --accent:#ff4d98; --accent-ink:#1b0a14; --chip:#2b2559; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#15122e; --surface:#201b45; --ink:#f1eeff; --muted:#a9a3d6; --line:#3a3470;
+  --accent:#ff4d98; --accent-ink:#1b0a14; --chip:#2b2559; color-scheme: dark;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 1rem/1.55 "DM Sans",system-ui,sans-serif}
+h1,h2,h3{font-family:"Bricolage Grotesque","DM Sans",system-ui,sans-serif;line-height:1.05;margin:0}
+a{color:inherit}
+.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+header.top{display:flex;justify-content:space-between;align-items:center;padding:18px 0}
+.logo{font-family:"Bricolage Grotesque",system-ui,sans-serif;font-weight:800;font-size:1.3rem;text-decoration:none}
+.logo span{color:var(--accent)}
+
+/* Héro : le jeu du moment */
+.hero{display:grid;grid-template-columns:1.1fr 1fr;gap:28px;align-items:stretch;padding:12px 0 36px}
+.hero-copy{display:flex;flex-direction:column;justify-content:center;gap:16px}
+.hero h1{font-size:clamp(2.4rem,6vw,4.4rem);font-weight:800;letter-spacing:-.02em}
+.hero p{color:var(--muted);max-width:46ch;margin:0}
+.cover{border-radius:28px;min-height:300px;padding:22px;display:flex;flex-direction:column;justify-content:flex-end;color:#fff;position:relative;overflow:hidden}
+.cover h3{font-size:clamp(1.6rem,3.4vw,2.4rem);font-weight:800;text-shadow:0 2px 14px rgba(0,0,0,.35)}
+.cover small{font-weight:500;opacity:.92}
+.btn{display:inline-block;background:var(--accent);color:var(--accent-ink);font-weight:700;text-decoration:none;padding:12px 20px;border-radius:12px;border:2px solid var(--accent)}
+.btn:hover{filter:brightness(1.08)}
+.btn:focus-visible,.chip:focus-visible,input:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--ink)}
+.cta-row{display:flex;gap:12px;flex-wrap:wrap}
+
+/* Filtres */
+.tools{display:flex;gap:12px;flex-wrap:wrap;align-items:center;padding:8px 0 20px}
+.chip{border:2px solid var(--line);background:var(--chip);color:var(--ink);font:500 .95rem "DM Sans",sans-serif;padding:8px 16px;border-radius:999px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+input[type=search]{flex:1 1 200px;min-width:0;border:2px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;padding:9px 14px;border-radius:12px}
+
+/* Grille */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:20px;padding-bottom:40px}
+.card{background:var(--surface);border:2px solid var(--line);border-radius:18px;overflow:hidden;display:flex;flex-direction:column}
+.card .art{height:130px;display:flex;align-items:flex-end;padding:12px 14px;color:#fff;font:800 1.25rem "Bricolage Grotesque",system-ui,sans-serif;text-shadow:0 2px 10px rgba(0,0,0,.4)}
+.card .body{padding:14px;display:flex;flex-direction:column;gap:10px;flex:1}
+.card p{margin:0;color:var(--muted);font-size:.95rem;flex:1}
+.tags{font-size:.82rem;color:var(--muted);font-weight:500}
+.card .btn{text-align:center;padding:10px 14px;border-radius:10px}
+.empty{grid-column:1/-1;color:var(--muted)}
+
+/* Ambiance vivante */
+.blob{position:fixed;z-index:-1;border-radius:50%;filter:blur(60px);opacity:.5;pointer-events:none}
+.b1{width:340px;height:340px;background:var(--accent);top:-90px;right:-70px}
+.b2{width:300px;height:300px;background:var(--blue);bottom:8%;left:-100px}
+.b3{width:240px;height:240px;background:var(--mint);top:48%;right:-80px}
+.logo{display:inline-block;transition:transform .2s}.logo:hover{transform:rotate(-4deg) scale(1.08)}
+.hero .cover{border:3px solid var(--ink);box-shadow:8px 8px 0 var(--accent);transform:rotate(1.5deg);transition:transform .3s}
+.hero .cover:hover{transform:rotate(-1deg) scale(1.02)}
+.btn{transition:transform .15s, box-shadow .15s;box-shadow:4px 4px 0 var(--ink)}
+.btn:hover{transform:translateY(-3px) scale(1.04);box-shadow:6px 6px 0 var(--ink)}
+.btn:active{transform:translateY(1px);box-shadow:1px 1px 0 var(--ink)}
+.chip{transition:transform .15s}.chip:hover{transform:translateY(-2px) rotate(-2deg)}
+.chip[aria-pressed="true"]{background:var(--accent);color:#fff;border-color:var(--ink);transform:rotate(-2deg)}
+.card{transition:transform .2s, box-shadow .2s;border:3px solid var(--ink)}
+.card:hover{transform:translateY(-6px) rotate(-.7deg);box-shadow:7px 7px 0 var(--accent)}
+.card:nth-child(3n):hover{transform:translateY(-6px) rotate(.7deg)}
+.ticker{overflow:hidden;border-block:3px solid var(--ink);background:var(--sun);color:#1b1740;margin:6px 0 34px;transform:rotate(-1deg)}
+.ticker div{display:flex;white-space:nowrap;width:max-content;padding:10px 0;font:800 1.05rem "Bricolage Grotesque",system-ui,sans-serif}
+.ticker span{padding-right:36px}
+:root{--bg2:#ffe0f0;--bg3:#dff0ff}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg2:#2a1450;--bg3:#12234d}}
+:root[data-theme="dark"]{--bg2:#2a1450;--bg3:#12234d}
+body{background:linear-gradient(120deg,var(--bg),var(--bg2),var(--bg3),var(--bg));background-size:300% 300%}
+.hero h1{background:linear-gradient(90deg,var(--accent),var(--blue),var(--mint),var(--accent));background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent}
+.card .art{position:relative;height:150px}
+.badge{position:absolute;top:10px;right:10px;background:var(--mint);color:#06281f;font:800 .8rem "Bricolage Grotesque",system-ui,sans-serif;padding:4px 10px;border-radius:999px;border:2px solid #1b1740;text-shadow:none}
+.more-wrap{text-align:center;padding:0 0 12px}
+#compteur{text-align:center;color:var(--muted);font-weight:700;margin:0 0 40px}
+.floaters{display:none}
+button.btn{font:inherit;font-weight:700;cursor:pointer}
+.ico{position:absolute;right:14px;top:8px;font-size:3.4rem;line-height:1;transform:rotate(-8deg);filter:drop-shadow(0 4px 6px rgba(0,0,0,.35));pointer-events:none}
+.cover .ico{font-size:6rem;right:22px;top:16px}
+.ok .ico{display:none}
+.cov{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ok::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.65),rgba(0,0,0,0) 60%);pointer-events:none}
+.nom,.cover>small,.cover>h3{position:relative;z-index:1}
+.badge{z-index:1}
+.shops,.acts{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.lbl{font-size:.8rem;color:var(--muted);font-weight:500;width:100%}
+.mini{display:inline-block;border:2px solid var(--ink);background:var(--surface);color:var(--ink);font:700 .8rem "DM Sans",system-ui,sans-serif;padding:4px 10px;border-radius:999px;text-decoration:none;cursor:pointer;transition:transform .15s, background .15s}
+.mini:hover{background:var(--sun);color:#1b1740;transform:translateY(-2px)}
+.mini:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.fav[aria-pressed="true"]{background:var(--accent);color:#fff}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:12px;font-weight:700;z-index:60}
+#haut{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:40;padding:10px 16px;display:none}
+.floaters span{position:fixed;bottom:-50px;font-size:1.7rem;opacity:.55;pointer-events:none;z-index:-1;animation:monte 14s linear infinite}
+.pop{position:fixed;z-index:50;pointer-events:none;font-size:1.6rem;animation:pop .9s ease-out forwards}
+@keyframes monte{to{transform:translateY(-115vh) rotate(40deg)}}
+@keyframes pop{from{opacity:1;transform:translate(0,0) scale(.6)}to{opacity:0;transform:translate(var(--dx),var(--dy)) scale(1.4) rotate(var(--r))}}
+@keyframes fondmove{50%{background-position:100% 50%}}
+@media (prefers-reduced-motion:no-preference){body{animation:fondmove 20s ease infinite}.hero h1{animation:fondmove 7s linear infinite}.floaters{display:block}.card .art{transition:transform .3s}.card:hover .art{transform:scale(1.04)}}
+@media (prefers-reduced-motion:no-preference){
+  .ticker div{animation:slide 26s linear infinite}
+  @keyframes slide{to{transform:translateX(-50%)}}
+  .blob{animation:float 11s ease-in-out infinite alternate}
+  .b2{animation-duration:14s}.b3{animation-duration:9s}
+  @keyframes float{to{transform:translate(30px,-40px)}}
+}
+footer{border-top:2px solid var(--line);padding:24px 0 40px;color:var(--muted);font-size:.9rem}
+footer p{margin:0 0 8px;max-width:70ch}
+
+@media (max-width:760px){.hero{grid-template-columns:1fr}.cover{min-height:220px}}
+@media (prefers-reduced-motion:no-preference){.hero .cover{animation:rise .6s ease both}@keyframes rise{from{opacity:0;transform:translateY(14px)}}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span>
+  <header class="top">
+    <a class="logo" href="#">Level<span>Up</span></a>
+    <a class="btn ghost" href="#catalogue">Voir les jeux</a>
+  </header>
+
+  <section class="hero" id="hero"></section>
+
+  <div class="ticker" aria-hidden="true"><div id="tick"></div></div>
+
+  <section id="catalogue" aria-labelledby="cat-titre">
+    <h2 id="cat-titre" style="font-size:1.8rem;margin-bottom:14px">Notre sélection</h2>
+    <div class="tools">
+      <div id="chips" role="group" aria-label="Filtrer par genre" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+      <input type="search" id="q" placeholder="Chercher un jeu" aria-label="Chercher un jeu">
+      <button class="chip hasard" type="button">🎲 Au hasard</button>
+    </div>
+    <div class="grid" id="grid"></div>
+    <div class="more-wrap"><button class="btn" id="more" type="button">Voir plus de jeux</button></div>
+    <p id="compteur" aria-live="polite"></p>
+  </section>
+
+  <footer>
+    <p>Chaque bouton « Acheter » t’envoie directement sur la boutique officielle du jeu. L’achat et le paiement se font là-bas, jamais sur ce site.</p>
+    <p>Transparence : certains liens peuvent être des liens partenaires. Si tu achètes via ces liens, le site peut toucher une petite commission, sans coût supplémentaire pour toi.</p>
+  </footer>
+</div>
+
+<script>
+/* ===== MODIFIE ICI : ajoute, retire ou change tes jeux ===== */
+const STORE = "Steam";                       // nom affiché sur le bouton
+const BASE  = "https://store.steampowered.com/app/";
+const GAMES = [
+  {titre:"Elden Ring",       genres:["RPG","Action"],     id:1245620, a:"#7a4b00", b:"#1b1208", desc:"Un monde ouvert immense et sauvage, à explorer à ton rythme. Exigeant, mais incroyablement gratifiant."},
+  {titre:"Grand Theft Auto VI", genres:["Action","Aventure"], url:"https://www.rockstargames.com/VI", boutique:"Rockstar Games", badge:"Consoles", texte:"Voir le site officiel Rockstar", a:"#ff3d9a", b:"#ffb300", desc:"Le nouveau GTA, à Vice City, sur PS5 et Xbox Series X|S (date annoncée : 19 novembre 2026). Pas de version PC annoncée pour l’instant."},
+  {titre:"Baldur’s Gate 3",  genres:["RPG"],              id:1086940, a:"#7b1fa2", b:"#1a0f33", desc:"Un RPG au tour par tour où chaque choix compte. Des dizaines d’heures d’histoire, seul ou à plusieurs."},
+  {titre:"Hades",            genres:["Indé","Action"],    id:1145360, a:"#d32f2f", b:"#3b0d1f", desc:"Évade-toi des Enfers dans ce roguelike nerveux. Chaque tentative fait avancer l’histoire."},
+  {titre:"Cyberpunk 2077",   genres:["RPG","Action"],     id:1091500, a:"#e6c200", b:"#0e7c86", desc:"Une mégalopole futuriste, des choix à conséquences et un scénario marquant."},
+  {titre:"Stardew Valley",   genres:["Indé","Simulation"],id:413150,  a:"#43a047", b:"#c0a030", desc:"Reprends une ferme, cultive, pêche, fais-toi des amis. Parfait pour se détendre."},
+  {titre:"Hollow Knight",    genres:["Indé","Action"],    id:367520,  a:"#3b4a7a", b:"#0c0f1f", desc:"Explore un royaume d’insectes en ruine. Un metroidvania superbe et très généreux."},
+  {titre:"The Witcher 3",    genres:["RPG"],              id:292030,  a:"#546e7a", b:"#1c2328", desc:"Incarne un chasseur de monstres dans une aventure aux quêtes secondaires mémorables."},
+  {titre:"Celeste",          genres:["Indé"],             id:504230,  a:"#ec407a", b:"#4527a0", desc:"Un jeu de plateforme précis et touchant sur l’escalade d’une montagne… et de soi-même."},
+  {titre:"Red Dead Redemption 2", genres:["Aventure","Action"], id:1174180, a:"#8d4b2a", b:"#1d1410", desc:"Une fresque western à couper le souffle, entre grands espaces et destin d’un hors-la-loi."},
+  {titre:"Hollow Knight: Silksong", genres:["Indé","Action"], id:1030300, a:"#b71c1c", b:"#12081a", desc:"La suite très attendue de Hollow Knight : nouvelle héroïne, nouveau royaume, même exigence."},
+  {titre:"Terraria", genres:["Indé","Survie"], id:105600, a:"#2e7d32", b:"#5d4037", desc:"Creuse, construis et combats dans un monde 2D sans limites, seul ou entre amis."},
+  {titre:"Portal 2", genres:["Aventure","Coop"], id:620, a:"#1e88e5", b:"#ef6c00", desc:"Des énigmes géniales avec un pistolet à portails, et un mode coopération très drôle."},
+  {titre:"Dark Souls III", genres:["RPG","Action"], id:374320, a:"#8a4b08", b:"#0d0d0d", desc:"Des combats exigeants et un univers sombre. La victoire n’en a que plus de goût."},
+  {titre:"Sekiro: Shadows Die Twice", genres:["Action"], id:814380, a:"#c62828", b:"#263238", desc:"Un shinobi, un katana et un duel permanent. Précis, intense, spectaculaire."},
+  {titre:"Disco Elysium", genres:["RPG","Indé"], id:632470, a:"#ff8f00", b:"#4e342e", desc:"Un détective amnésique, aucun combat classique et une écriture exceptionnelle."},
+  {titre:"Undertale", genres:["Indé","RPG"], id:391540, a:"#e53935", b:"#111111", desc:"Un RPG où personne n’est obligé de se battre. Drôle, touchant et inoubliable."},
+  {titre:"Cuphead", genres:["Indé","Action"], id:268910, a:"#fbc02d", b:"#c62828", desc:"Des combats de boss dans un dessin animé des années 1930. Difficile et magnifique."},
+  {titre:"Dead Cells", genres:["Indé","Action"], id:588650, a:"#00acc1", b:"#311b92", desc:"Un roguelike-metroidvania ultra nerveux : chaque partie est différente."},
+  {titre:"Slay the Spire", genres:["Indé","Stratégie"], id:646570, a:"#6a1b9a", b:"#b71c1c", desc:"Construis ton deck de cartes et grimpe la tour. Simple à comprendre, difficile à lâcher."},
+  {titre:"Subnautica", genres:["Survie","Aventure"], id:264710, a:"#0288d1", b:"#01223a", desc:"Échoué sur une planète océan, tu explores les fonds marins et tu survis."},
+  {titre:"It Takes Two", genres:["Coop","Aventure"], id:1426210, a:"#ff7043", b:"#26a69a", desc:"Une aventure à jouer obligatoirement à deux, inventive à chaque chapitre."},
+  {titre:"Valheim", genres:["Survie","Coop"], id:892970, a:"#5d7d3a", b:"#1b2a33", desc:"Survis dans un monde viking avec tes amis : construis, explore et affronte des boss."},
+  {titre:"Satisfactory", genres:["Simulation","Coop"], id:526870, a:"#f9a825", b:"#37474f", desc:"Bâtis des usines géantes sur une planète inconnue, seul ou en équipe."},
+  {titre:"Factorio", genres:["Simulation","Stratégie"], id:427520, a:"#ef6c00", b:"#3e2723", desc:"Automatise tout. Le jeu de gestion qui fait perdre la notion du temps."},
+  {titre:"Civilization VI", genres:["Stratégie"], id:289070, a:"#1565c0", b:"#c9a227", desc:"Fais naître un empire et mène-le à travers les siècles. « Encore un tour ! »"},
+  {titre:"Helldivers 2", genres:["Coop","Action"], id:553850, a:"#fdd835", b:"#212121", desc:"De la coopération chaotique à quatre pour défendre la galaxie. Beaucoup de rires garantis."},
+  {titre:"Doom Eternal", genres:["FPS","Action"], id:782330, a:"#d84315", b:"#1a0a0a", desc:"Un FPS rapide et brutal où tu dois rester en mouvement. Pur adrénaline."},
+  {titre:"Resident Evil 4", genres:["Action","Horreur"], id:2050650, a:"#546e7a", b:"#1b0f0f", desc:"Le remake d’un classique de l’horreur et de l’action. Tendu du début à la fin."},
+  {titre:"Lethal Company", genres:["Coop","Horreur"], id:1966720, a:"#ef6c00", b:"#101010", desc:"Récupère des objets dans des lunes hantées avec tes amis. Panique et fous rires."},
+  {titre:"Balatro", genres:["Indé","Stratégie"], id:2379780, a:"#c2185b", b:"#1a237e", desc:"Du poker mélangé à un roguelike. Redoutablement addictif."},
+  {titre:"Vampire Survivors", genres:["Indé","Action"], id:1794680, a:"#7b1fa2", b:"#212121", desc:"Survis à des hordes de monstres en devenant de plus en plus puissant. Simple et fun."},
+  {titre:"Black Myth: Wukong", genres:["Action","RPG"], id:2358720, a:"#bf6b1a", b:"#10202b", desc:"Une aventure inspirée de la mythologie chinoise, avec des boss spectaculaires."},
+  {titre:"Outer Wilds", genres:["Aventure","Indé"], id:753640, a:"#f57c00", b:"#0d1b3a", desc:"Explore un système solaire pris dans une boucle de 22 minutes. Une pépite à vivre sans spoiler."},
+  {titre:"Hogwarts Legacy", genres:["RPG","Aventure"], id:990080, a:"#4527a0", b:"#b8860b", desc:"Vis ta propre vie d’élève sorcier dans un monde ouvert magique."},
+  {titre:"Monster Hunter: World", genres:["Action","Coop"], id:582010, a:"#2e7d32", b:"#bf360c", desc:"Chasse d’énormes monstres, forge de meilleurs équipements, recommence. À plusieurs, c’est génial."},
+  {titre:"Stray", genres:["Aventure","Indé"], id:1332010, a:"#ff6f00", b:"#006064", desc:"Incarne un chat errant dans une ville futuriste peuplée de robots. Doux et original."},
+  {titre:"Ori and the Will of the Wisps", genres:["Aventure","Indé"], id:1057090, a:"#26c6da", b:"#1a237e", desc:"Un platformer magnifique et émouvant, aussi beau qu’agréable à jouer."},
+  {titre:"Fortnite", genres:["Gratuit","Action","Coop"], url:"https://store.epicgames.com/p/fortnite", boutique:"Epic Games", gratuit:true, a:"#7c4dff", b:"#00b0ff", desc:"Le battle royale culte : saute sur l’île, construis, survis et joue avec tes amis. Gratuit, avec des événements en continu."},
+  {titre:"Grand Theft Auto V", genres:["Action","Aventure"], url:"https://store.epicgames.com/p/grand-theft-auto-v", boutique:"Epic Games", a:"#2e7d32", b:"#f9a825", desc:"Los Santos, trois héros et un immense monde ouvert, avec GTA Online en prime. Un classique incontournable."},
+  {titre:"Rocket League", genres:["Gratuit","Action","Coop"], url:"https://store.epicgames.com/browse?q=Rocket%20League", boutique:"Epic Games", gratuit:true, a:"#1e88e5", b:"#ff6f00", desc:"Du football avec des voitures. Parties rapides, très addictif, jouable gratuitement."},
+  {titre:"Fall Guys", genres:["Gratuit","Coop"], url:"https://store.epicgames.com/browse?q=Fall%20Guys", boutique:"Epic Games", gratuit:true, a:"#ec407a", b:"#ffb300", desc:"Des dizaines de joueurs, des courses d’obstacles déjantées, une seule couronne. Gratuit et très drôle."},
+  {titre:"Genshin Impact", genres:["Gratuit","RPG","Aventure"], url:"https://store.epicgames.com/browse?q=Genshin%20Impact", boutique:"Epic Games", gratuit:true, a:"#26c6da", b:"#7e57c2", desc:"Un magnifique monde ouvert à explorer avec des combats élémentaires. Gratuit à télécharger."},
+  {titre:"Alan Wake 2", genres:["Horreur","Aventure"], url:"https://store.epicgames.com/browse?q=Alan%20Wake%202", boutique:"Epic Games", a:"#455a64", b:"#b71c1c", desc:"Un thriller d’horreur très narratif, entre enquête et cauchemar. Une ambiance unique."},
+  {titre:"Skyrim Special Edition", genres:["RPG","Aventure"], id:489830, desc:"Un monde ouvert légendaire de dragons et de quêtes, encore joué des années après sa sortie."},
+  {titre:"Fallout 4", genres:["RPG","Action"], id:377160, desc:"Reconstruis un monde post-apocalyptique à ta façon."},
+  {titre:"Left 4 Dead 2", genres:["FPS","Coop"], id:550, desc:"Affronte des hordes de zombies à quatre. Un classique de la coopération."},
+  {titre:"Half-Life 2", genres:["FPS","Aventure"], id:220, desc:"Le FPS culte qui a changé le jeu vidéo, avec sa fameuse arme à gravité."},
+  {titre:"Counter-Strike 2", genres:["Gratuit","FPS"], id:730, gratuit:true, desc:"Le FPS compétitif de référence, gratuit à télécharger."},
+  {titre:"Dota 2", genres:["Gratuit","Stratégie"], id:570, gratuit:true, desc:"Le MOBA mythique : deux équipes de cinq, des centaines de combinaisons. Gratuit."},
+  {titre:"Apex Legends", genres:["Gratuit","FPS","Coop"], id:1172470, gratuit:true, desc:"Un battle royale nerveux avec des héros aux pouvoirs uniques. Gratuit."},
+  {titre:"Warframe", genres:["Gratuit","Action","Coop"], id:230410, gratuit:true, desc:"Incarne un guerrier spatial ninja, seul ou en équipe. Gratuit et très généreux."},
+  {titre:"Path of Exile", genres:["Gratuit","RPG"], id:238960, gratuit:true, desc:"Un action-RPG immense et profondément personnalisable. Gratuit."},
+  {titre:"Rust", genres:["Survie","Coop"], id:252490, desc:"Survis, construis ta base et méfie-toi des autres joueurs."},
+  {titre:"ARK: Survival Evolved", genres:["Survie","Aventure"], id:346110, desc:"Apprivoise des dinosaures et survis sur une île préhistorique."},
+  {titre:"Project Zomboid", genres:["Survie","Simulation"], id:108600, desc:"L’un des jeux de survie zombie les plus réalistes. Chaque détail compte."},
+  {titre:"Sons of the Forest", genres:["Survie","Horreur","Coop"], id:1326470, desc:"Survie et horreur sur une île mystérieuse, jouable à plusieurs."},
+  {titre:"Raft", genres:["Survie","Coop"], id:648800, desc:"Perdu en mer sur un radeau, agrandis-le et survis aux requins."},
+  {titre:"Phasmophobia", genres:["Horreur","Coop"], id:739630, desc:"Chasse les fantômes en équipe, micro allumé. Frissons garantis."},
+  {titre:"Resident Evil Village", genres:["Horreur","Action"], id:1196590, desc:"Un village mystérieux, des créatures et une tension permanente."},
+  {titre:"Dead Space", genres:["Horreur"], id:1693980, desc:"Le remake d’un classique de l’horreur dans l’espace. Angoissant."},
+  {titre:"Assassin’s Creed Odyssey", genres:["RPG","Action"], id:812140, desc:"Une aventure dans la Grèce antique, avec des choix et des batailles navales."},
+  {titre:"Far Cry 5", genres:["FPS","Action"], id:552520, desc:"Un grand monde ouvert libre et chaotique, jouable en coopération."},
+  {titre:"Borderlands 3", genres:["FPS","Coop"], id:397540, desc:"Un looter-shooter déjanté, avec des millions d’armes et beaucoup d’humour."},
+  {titre:"Mass Effect Legendary Edition", genres:["RPG","Aventure"], id:1328670, desc:"La trilogie culte de science-fiction, remastérisée."},
+  {titre:"Monster Hunter Rise", genres:["Action","Coop"], id:1446780, desc:"Chasse des monstres géants avec ton compagnon. Accessible pour débuter."},
+  {titre:"Persona 5 Royal", genres:["RPG"], id:1687950, desc:"Lycéen le jour, voleur de cœurs la nuit. Un style et une histoire exceptionnels."},
+  {titre:"NieR: Automata", genres:["Action","RPG"], id:524220, desc:"Des androïdes, un monde en ruine et une histoire inoubliable."},
+  {titre:"Devil May Cry 5", genres:["Action"], id:601150, desc:"Des combats stylés et spectaculaires, avec trois personnages jouables."},
+  {titre:"Street Fighter 6", genres:["Action"], id:1364780, desc:"Le jeu de combat de référence, facile à prendre en main et riche en profondeur."},
+  {titre:"Tekken 8", genres:["Action"], id:1778820, desc:"Des combats 3D intenses avec une grande variété de personnages."},
+  {titre:"Forza Horizon 5", genres:["Course"], id:1551360, desc:"Des courses en monde ouvert au Mexique, magnifiques et variées."},
+  {titre:"Euro Truck Simulator 2", genres:["Simulation"], id:227300, desc:"Conduis un camion à travers l’Europe. Étonnamment relaxant."},
+  {titre:"Cities: Skylines", genres:["Simulation","Stratégie"], id:255710, desc:"Construis et gère la ville de tes rêves, quartier par quartier."},
+  {titre:"Age of Empires II: Definitive Edition", genres:["Stratégie"], id:813780, desc:"Le grand classique de la stratégie en temps réel, remis au goût du jour."},
+  {titre:"Among Us", genres:["Coop"], id:945360, desc:"Trouve l’imposteur dans l’équipage. Parfait entre amis."},
+  {titre:"Overcooked! 2", genres:["Coop"], id:728880, desc:"Cuisine en équipe dans des cuisines absurdes. Chaos et fous rires garantis."},
+  {titre:"A Way Out", genres:["Coop","Aventure"], id:1222700, desc:"Une évasion de prison à vivre à deux, en écran partagé."},
+  {titre:"Inside", genres:["Indé","Aventure"], id:304430, desc:"Une aventure silencieuse, mystérieuse et inoubliable."},
+  {titre:"Risk of Rain 2", genres:["Action","Coop"], id:632360, desc:"Un roguelike en 3D où l’on devient absurdement puissant, à plusieurs."},
+  {titre:"The Binding of Isaac: Rebirth", genres:["Indé","Action"], id:250900, desc:"Un roguelike sombre et addictif avec des milliers de combinaisons d’objets."},
+  {titre:"Life is Strange", genres:["Aventure"], id:319630, desc:"Remonte le temps pour changer tes choix. Une histoire touchante."},
+  {titre:"God of War", genres:["Action","Aventure"], id:1593500, desc:"Kratos et son fils dans un voyage épique au cœur de la mythologie nordique."},
+  {titre:"Marvel’s Spider-Man Remastered", genres:["Action","Aventure"], id:1817070, desc:"Balance-toi dans New York avec une fluidité de déplacement incroyable."},
+  {titre:"Horizon Zero Dawn", genres:["Action","RPG"], id:1151640, desc:"Chasse des machines géantes dans un monde post-apocalyptique magnifique."},
+  {titre:"Ghost of Tsushima", genres:["Action","Aventure"], id:2215430, desc:"Un samouraï solitaire sur l’île de Tsushima. Combats et paysages somptueux."},
+  {titre:"Clair Obscur: Expedition 33", genres:["RPG"], id:1903340, desc:"Un RPG au tour par tour très stylé, inspiré de la Belle Époque."},
+  {titre:"Sea of Thieves", genres:["Coop","Aventure"], id:1172620, desc:"Navigue, explore et pille avec ton équipage de pirates."},
+  {titre:"Palworld", genres:["Survie","Aventure"], id:1623730, desc:"Capture des créatures, construis et survis dans un monde ouvert."},
+  {titre:"No Man’s Sky", genres:["Aventure","Survie"], id:275850, desc:"Explore une galaxie infinie de planètes, à pied ou en vaisseau."},
+  {titre:"Elden Ring Nightreign", genres:["Action","Coop"], id:2622380, desc:"Une version coopérative de l’univers d’Elden Ring, à trois joueurs."},
+  {titre:"RimWorld", genres:["Simulation","Stratégie"], id:294100, desc:"Gère une colonie de survivants et laisse l’histoire s’écrire toute seule."}
+];
+/* ========================================================== */
+
+const lien = g => g.url || BASE + g.id;           // g.url = ton lien partenaire (optionnel)
+const boutique = g => g.boutique || STORE;        // g.boutique = nom de la boutique (optionnel)
+const teinte = s => [...s].reduce((h, c) => (h * 31 + c.charCodeAt(0)) % 360, 7);
+const fond = g => g.a ? `linear-gradient(135deg, ${g.a}, ${g.b})` : `linear-gradient(135deg, hsl(${teinte(g.titre)} 75% 48%), hsl(${(teinte(g.titre) + 50) % 360} 70% 28%))`;
+// Pochette officielle Steam (visible une fois le site hébergé) ; sinon le dégradé s’affiche
+const couv = g => g.id ? `https://cdn.akamai.steamstatic.com/steam/apps/${g.id}/header.jpg` : (g.img || "");
+const art = g => `radial-gradient(circle, rgba(255,255,255,.22) 2px, transparent 3px) 0 0/18px 18px, ${fond(g)}`;
+const cover = g => couv(g) ? `<img class="cov" src="${couv(g)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : "";
+const ICONES = {Action:"⚔️", RPG:"🧙", Aventure:"🗺️", "Indé":"🎨", Simulation:"🏗️", "Stratégie":"♟️", Coop:"🤝", Survie:"🏕️", FPS:"🔫", Horreur:"👻", Course:"🏎️", Sport:"⚽", Casual:"🧩"};
+const icone = g => { const k = (g.genres || []).find(x => ICONES[x]); return ICONES[k] || (g.gratuit ? "🎁" : "🎮"); };
+const MAGASINS = [
+  ["Steam", n => "https://store.steampowered.com/search/?term=" + n],
+  ["Epic", n => "https://store.epicgames.com/browse?q=" + n],
+  ["GOG", n => "https://www.gog.com/en/games?query=" + n],
+  ["Humble", n => "https://www.humblebundle.com/store/search?search=" + n]
+];
+const boutiques = g => { const n = encodeURIComponent(g.titre); return MAGASINS.map(([nom, f]) => `<a class="mini" href="${f(n)}" target="_blank" rel="noopener noreferrer sponsored">${nom}</a>`).join(""); };
+const video = g => "https://www.youtube.com/results?search_query=" + encodeURIComponent(g.titre + " trailer");
+
+let favs = new Set();
+try { favs = new Set(JSON.parse(localStorage.getItem("favs") || "[]")); } catch (e) {}
+const sauver = () => { try { localStorage.setItem("favs", JSON.stringify([...favs])); } catch (e) {} };
+
+function toast(msg) {
+  const t = document.createElement("div");
+  t.className = "toast"; t.textContent = msg; t.setAttribute("role", "status");
+  document.body.appendChild(t); setTimeout(() => t.remove(), 1800);
+}
+async function partager(g) {
+  const data = { title: g.titre, text: "Regarde ce jeu : " + g.titre, url: lien(g) };
+  try {
+    if (navigator.share) await navigator.share(data);
+    else { await navigator.clipboard.writeText(data.text + " " + data.url); toast("Lien copié !"); }
+  } catch (e) { if (e.name !== "AbortError") toast("Partage indisponible ici"); }
+}
+// Affiche l’image officielle si elle charge ; sinon on garde l’illustration
+function suivreImages() {
+  document.querySelectorAll("img.cov:not([data-v])").forEach(img => {
+    img.dataset.v = "1";
+    const ok = () => img.parentNode.classList.add("ok");
+    const ko = () => img.remove();
+    if (img.complete) { img.naturalWidth ? ok() : ko(); }
+    else { img.addEventListener("load", ok); img.addEventListener("error", ko); }
+  });
+}
+const badge = g => { const t = g.badge || (g.gratuit ? "Gratuit" : ""); return t ? `<span class="badge">${t}</span>` : ""; };
+const genres = ["Tous", "♥ Favoris", ...new Set(GAMES.flatMap(g => g.genres))];
+let genre = "Tous", terme = "", affiche = 48;
+
+// Héro : le premier jeu de la liste est le jeu du moment
+const h = GAMES[0];
+document.getElementById("hero").innerHTML = `
+  <div class="hero-copy">
+    <h1>Trouve ton prochain jeu.</h1>
+    <p>Une sélection courte de jeux qui méritent vraiment ton temps. Un clic, et tu es sur la boutique officielle pour l’acheter.</p>
+    <div class="cta-row">
+      <a class="btn" href="${lien(h)}" target="_blank" rel="noopener noreferrer sponsored">Acheter ${h.titre} sur ${boutique(h)}</a>
+      <a class="btn ghost" href="#catalogue">Parcourir la sélection</a>
+      <button class="btn ghost hasard" type="button">🎲 Jeu au hasard</button>
+    </div>
+  </div>
+  <div class="cover" style="background:${art(h)}">${cover(h)}<span class="ico" aria-hidden="true">${icone(h)}</span>
+    <small>Jeu du moment</small>
+    <h3>${h.titre}</h3>
+  </div>`;
+
+function filtres(){
+  const c = document.getElementById("chips");
+  c.innerHTML = "";
+  genres.forEach(n => {
+    const b = document.createElement("button");
+    b.className = "chip"; b.textContent = n;
+    b.setAttribute("aria-pressed", n === genre);
+    b.onclick = () => { genre = n; affiche = 48; filtres(); liste(); };
+    c.appendChild(b);
+  });
+}
+
+function liste(){
+  const t = terme.trim().toLowerCase();
+  const tous = GAMES.filter(g => (genre === "Tous" || (genre === "♥ Favoris" ? favs.has(g.titre) : (g.genres || []).includes(genre))) && g.titre.toLowerCase().includes(t));
+  const items = tous.slice(0, affiche);
+  document.getElementById("grid").innerHTML = items.length ? items.map(g => `
+    <article class="card">
+      <div class="art" style="background:${art(g)}">${cover(g)}<span class="ico" aria-hidden="true">${icone(g)}</span>${badge(g)}<span class="nom">${g.titre}</span></div>
+      <div class="body">
+        <span class="tags">${g.genres.join(", ")}</span>
+        <p>${g.desc || "Découvre ce jeu sur la boutique officielle."}</p>
+        <a class="btn" href="${lien(g)}" target="_blank" rel="noopener noreferrer sponsored">${g.texte || ((g.gratuit ? "Jouer gratuitement" : "Acheter") + " sur " + boutique(g))}</a>
+        <div class="shops"><span class="lbl">Chercher aussi sur</span>${boutiques(g)}</div>
+        <div class="acts"><button type="button" class="mini fav" data-i="${GAMES.indexOf(g)}" aria-pressed="${favs.has(g.titre)}">♥ Favori</button><button type="button" class="mini" data-i="${GAMES.indexOf(g)}">Partager</button><a class="mini" href="${video(g)}" target="_blank" rel="noopener noreferrer">Bande-annonce</a></div>
+      </div>
+    </article>`).join("") : `<p class="empty">Aucun jeu ne correspond. Essaie un autre genre ou un autre mot.</p>`;
+  const m = document.getElementById("more");
+  m.style.display = tous.length > items.length ? "inline-block" : "none";
+  m.textContent = `Voir plus de jeux (${tous.length - items.length} restants)`;
+  document.getElementById("compteur").textContent = tous.length + " jeux";
+  suivreImages();
+}
+
+document.getElementById("q").addEventListener("input", e => { terme = e.target.value; affiche = 48; liste(); });
+
+// Bande défilante
+const mots = ["Nouveaux jeux","Gratuit","RPG","Action","Coop","Indé","Aventure","FPS","Survie"];
+const bande = mots.map(m => `<span>★ ${m}</span>`).join("");
+document.getElementById("tick").innerHTML = bande + bande;
+
+document.getElementById("more").onclick = () => { affiche += 48; liste(); };
+
+// Boutons des cartes : favori et partage
+document.getElementById("grid").addEventListener("click", e => {
+  const b = e.target.closest("button.mini"); if (!b) return;
+  const g = GAMES[+b.dataset.i];
+  if (b.classList.contains("fav")) {
+    favs.has(g.titre) ? favs.delete(g.titre) : favs.add(g.titre); sauver();
+    b.setAttribute("aria-pressed", favs.has(g.titre));
+    toast(favs.has(g.titre) ? "Ajouté aux favoris ♥" : "Retiré des favoris");
+    if (genre === "♥ Favoris") liste();
+  } else partager(g);
+});
+
+// Jeu au hasard
+function hasard() {
+  const g = GAMES[Math.floor(Math.random() * GAMES.length)];
+  genre = "Tous"; terme = g.titre; affiche = 48;
+  document.getElementById("q").value = g.titre;
+  filtres(); liste();
+  document.getElementById("catalogue").scrollIntoView({ behavior: "smooth" });
+  toast("🎲 " + g.titre);
+}
+document.querySelectorAll(".hasard").forEach(b => { b.onclick = hasard; });
+
+// Bouton pour remonter en haut
+const haut = document.createElement("button");
+haut.id = "haut"; haut.type = "button"; haut.className = "btn"; haut.textContent = "↑";
+haut.setAttribute("aria-label", "Remonter en haut");
+haut.onclick = () => window.scrollTo({ top: 0, behavior: "smooth" });
+document.body.appendChild(haut);
+addEventListener("scroll", () => { haut.style.display = scrollY > 600 ? "block" : "none"; }, { passive: true });
+
+// Emojis qui flottent en arrière-plan
+const fl = document.createElement("div");
+fl.className = "floaters"; fl.setAttribute("aria-hidden", "true");
+["🎮","🕹️","👾","⭐","🏆","🚀","🎲","✨"].forEach((e, i) => {
+  const s = document.createElement("span");
+  s.textContent = e; s.style.left = (6 + i * 12) + "%";
+  s.style.animationDelay = (-i * 1.8) + "s"; s.style.animationDuration = (11 + (i % 3) * 3) + "s";
+  fl.appendChild(s);
+});
+document.body.appendChild(fl);
+
+// Petite explosion d’emojis quand on clique sur un bouton
+document.addEventListener("click", e => {
+  if (!e.target.closest(".btn") || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  for (let i = 0; i < 10; i++) {
+    const s = document.createElement("span");
+    s.className = "pop"; s.textContent = ["🎮","⭐","🔥","✨","🎉"][i % 5];
+    s.style.left = e.clientX + "px"; s.style.top = e.clientY + "px";
+    s.style.setProperty("--dx", (Math.random() * 240 - 120) + "px");
+    s.style.setProperty("--dy", (-60 - Math.random() * 160) + "px");
+    s.style.setProperty("--r", (Math.random() * 360 - 180) + "deg");
+    document.body.appendChild(s);
+    setTimeout(() => s.remove(), 900);
+  }
+});
+
+// Catalogue étendu : si un fichier games.json est à côté de la page (site hébergé), on l’ajoute
+fetch("games.json").then(r => r.ok ? r.json() : []).then(extra => {
+  if (!Array.isArray(extra) || !extra.length) return;
+  const deja = new Set(GAMES.map(g => g.titre.toLowerCase()));
+  extra.forEach(g => { if (g && g.titre && !deja.has(g.titre.toLowerCase())) GAMES.push(g); });
+  genres.splice(0, genres.length, "Tous", "♥ Favoris", ...new Set(GAMES.flatMap(g => g.genres || [])));
+  filtres(); liste();
+}).catch(() => {});
+filtres(); liste();
+</script>
+</body>
+</html>
